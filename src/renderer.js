@@ -122,7 +122,7 @@ async function handleSearch(keyword, resultContainer, side) {
     try {
         const res = await fetch(`${API_BASE}/pets?keyword=${encodeURIComponent(keyword)}&size=10`);
         const data = await res.json();
-        const pets = data.content || [];
+        const pets = Array.isArray(data) ? data : (data.content || []);
 
         if (pets.length > 0) {
             resultContainer.innerHTML = pets.map(p => `
