@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>洛克王国伤害计算器 MVP</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header class="app-header">
+        <h1>洛克王国伤害计算器 MVP</h1>
+    </header>
+    
+    <main class="app-main">
+        <!-- 我方精灵面板 -->
+        <section class="panel attacker-panel">
+            <h2>我方精灵 (攻击方)</h2>
+            <div class="control-group">
+                <input type="text" id="atkSearch" placeholder="搜索精灵名称..." autocomplete="off">
+                <div id="atkSearchResults" class="search-results"></div>
+            </div>
+
+            <div id="atkPetInfo" class="pet-info hidden">
+                <img id="atkPetImg" src="" alt="pet">
+                <h3 id="atkPetName">-</h3>
+                <div class="base-stats">
+                    <span>精力 <span id="atkBaseHp">0</span></span>
+                    <span>物攻 <span id="atkBaseAtk">0</span></span>
+                    <span>防禦 <span id="atkBaseDef">0</span></span>
+                    <span>魔攻 <span id="atkBaseMatk">0</span></span>
+                    <span>魔抗 <span id="atkBaseMdef">0</span></span>
+                    <span>速度 <span id="atkBaseSpd">0</span></span>
+                </div>
+            </div>
+
+            <div class="config-grid">
+                <div class="input-group">
+                    <label>性格</label>
+                    <select id="atkNature"></select>
+                </div>
+                <div class="input-group">
+                    <label>血脉星级</label>
+                    <select id="atkStarLevel">
+                        <option value="5" selected>5星 (最高倍率)</option>
+                        <option value="4">4星</option>
+                        <option value="3">3星</option>
+                        <option value="2">2星</option>
+                        <option value="1">1星</option>
+                        <option value="0">0星</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="iv-sliders">
+                <div class="iv-item"><label>精</label><input type="number" id="atkIvHp" min="0" max="10" value="10"></div>
+                <div class="iv-item"><label>物攻</label><input type="number" id="atkIvAtk" min="0" max="10" value="10"></div>
+                <div class="iv-item"><label>物防</label><input type="number" id="atkIvDef" min="0" max="10" value="10"></div>
+                <div class="iv-item"><label>魔攻</label><input type="number" id="atkIvMatk" min="0" max="10" value="10"></div>
+                <div class="iv-item"><label>魔抗</label><input type="number" id="atkIvMdef" min="0" max="10" value="10"></div>
+                <div class="iv-item"><label>速</label><input type="number" id="atkIvSpd" min="0" max="10" value="10"></div>
+            </div>
+            
+            <div class="calc-results highlight">
+                <h4>最终能力值</h4>
+                <div class="stats-grid">
+                    <div class="stat-card"><span>精力</span><strong id="atkFinalHp">0</strong></div>
+                    <div class="stat-card"><span>物攻</span><strong id="atkFinalAtk">0</strong></div>
+                    <div class="stat-card"><span>物防</span><strong id="atkFinalDef">0</strong></div>
+                    <div class="stat-card"><span>魔攻</span><strong id="atkFinalMatk">0</strong></div>
+                    <div class="stat-card"><span>魔抗</span><strong id="atkFinalMdef">0</strong></div>
+                    <div class="stat-card"><span>速度</span><strong id="atkFinalSpd">0</strong></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 敌方精灵面板 -->
+        <section class="panel defender-panel">
+            <h2>敌方精灵 (防御方)</h2>
+            <div class="control-group">
+                <input type="text" id="defSearch" placeholder="搜索精灵名称..." autocomplete="off">
+                <div id="defSearchResults" class="search-results"></div>
+            </div>
+
+            <div id="defPetInfo" class="pet-info hidden">
+                <img id="defPetImg" src="" alt="pet">
+                <h3 id="defPetName">-</h3>
+                <div class="base-stats">
+                    <span>物防 <span id="defBaseDef">0</span></span>
+                    <span>魔抗 <span id="defBaseMdef">0</span></span>
+                </div>
+            </div>
+
+            <div class="config-grid">
+                <div class="input-group">
+                    <label>敌方血脉星级 (估算)</label>
+                    <select id="defStarLevel">
+                        <option value="5" selected>5星 (满配)</option>
+                        <option value="0">0星 (平民)</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>防禦天分</label>
+                    <input type="number" id="defIvDef" min="0" max="10" value="10">
+                </div>
+                <div class="input-group">
+                    <label>魔抗天分</label>
+                    <input type="number" id="defIvMdef" min="0" max="10" value="10">
+                </div>
+            </div>
+
+            <div class="calc-results highlight-matrix">
+                <h4>防御矩阵预估</h4>
+                <div class="matrix-grid">
+                    <div class="matrix-col">
+                        <h5>物理防御</h5>
+                        <div class="matrix-item plus">加防性格: <strong id="defPlusDef">0</strong></div>
+                        <div class="matrix-item neutral">平衡性格: <strong id="defNeutralDef">0</strong></div>
+                        <div class="matrix-item minus">减防性格: <strong id="defMinusDef">0</strong></div>
+                    </div>
+                    <div class="matrix-col">
+                        <h5>魔法防御(魔抗)</h5>
+                        <div class="matrix-item plus">加魔抗性格: <strong id="defPlusMdef">0</strong></div>
+                        <div class="matrix-item neutral">平衡性格: <strong id="defNeutralMdef">0</strong></div>
+                        <div class="matrix-item minus">减魔抗性格: <strong id="defMinusMdef">0</strong></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 伤害计算面板 -->
+        <section class="panel damage-panel">
+            <h2>伤害计算</h2>
+            <div class="dmg-controls">
+                <div class="input-group">
+                    <label>伤害类型</label>
+                    <div class="radio-group">
+                        <label><input type="radio" name="dmgType" value="physical" checked> 物理伤害</label>
+                        <label><input type="radio" name="dmgType" value="magical"> 魔法伤害</label>
+                    </div>
+                </div>
+                <div class="input-group">
+                    <label>技能展示威力 (含强化/克制等)</label>
+                    <input type="number" id="dmgPower" value="100" class="large-input">
+                </div>
+            </div>
+
+            <div class="dmg-results">
+                <h3>预估伤害</h3>
+                <div class="dmg-row plus">
+                    <span>打【加防性格】敌人:</span>
+                    <strong id="resDmgPlus">0</strong>
+                </div>
+                <div class="dmg-row neutral">
+                    <span>打【平衡性格】敌人:</span>
+                    <strong id="resDmgNeutral">0</strong>
+                </div>
+                <div class="dmg-row minus">
+                    <span>打【减防性格】敌人:</span>
+                    <strong id="resDmgMinus">0</strong>
+                </div>
+            </div>
+            
+            <div class="formula-note">
+                计算公式: floor( (攻击能力值 / 敌方防御能力值) × 0.9 × 展示威力 )
+            </div>
+        </section>
+    </main>
+
+    <script src="src/renderer.js"></script>
+</body>
+</html>
