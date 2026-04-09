@@ -1,6 +1,13 @@
 const API_BASE = 'http://159.65.135.84:8081/api/v1/data';
 const IMAGE_BASE = 'http://159.65.135.84:8081';
 
+function getFullImageUrl(path) {
+    if (!path) return '';
+    if (path.startsWith('http')) return path;
+    const cleanPath = path.startsWith('/') ? path.substring(1) : path;
+    return `${IMAGE_BASE}/${cleanPath.startsWith('media/') ? '' : 'media/'}${cleanPath}`;
+}
+
 // 状态数据
 let natures = [];
 let atkPet = null;
@@ -127,7 +134,7 @@ async function handleSearch(keyword, resultContainer, side) {
         if (pets.length > 0) {
             resultContainer.innerHTML = pets.map(p => `
                 <div class="search-item" data-id="${p.id}">
-                    <img src="${IMAGE_BASE}${p.imageUrl}" style="width:20px;height:20px;vertical-align:middle;margin-right:5px;">
+                    <img src="${getFullImageUrl(p.imageUrl)}" style="width:20px;height:20px;vertical-align:middle;margin-right:5px;">
                     ${p.name}
                 </div>
             `).join('');
@@ -159,7 +166,7 @@ async function loadPetDetails(id, side) {
         if (side === 'atk') {
             atkPet = pet;
             D.atkPetInfo.classList.remove('hidden');
-            D.atkPetImg.src = `${IMAGE_BASE}${pet.imageUrl}`;
+            D.atkPetImg.src = getFullImageUrl(pet.imageUrl);
             D.atkPetName.innerText = pet.name;
             D.atkBaseHp.innerText = pet.hp;
             D.atkBaseAtk.innerText = pet.attack;
@@ -170,7 +177,7 @@ async function loadPetDetails(id, side) {
         } else {
             defPet = pet;
             D.defPetInfo.classList.remove('hidden');
-            D.defPetImg.src = `${IMAGE_BASE}${pet.imageUrl}`;
+            D.defPetImg.src = getFullImageUrl(pet.imageUrl);
             D.defPetName.innerText = pet.name;
             D.defBaseDef.innerText = pet.defense;
             D.defBaseMdef.innerText = pet.magic_defense;
