@@ -1,6 +1,13 @@
 const API_BASE = 'http://159.65.135.84:8081/api/v1/data';
 const IMAGE_BASE = 'http://159.65.135.84:8081';
 
+function getFullImageUrl(path) {
+    if (!path) return '';
+    if (path.startsWith('http')) return path;
+    const cleanPath = path.startsWith('/') ? path.substring(1) : path;
+    return `${IMAGE_BASE}/${cleanPath.startsWith('media/') ? '' : 'media/'}${cleanPath}`;
+}
+
 // 状态数据
 let natures = [];
 let atkPet = null;
