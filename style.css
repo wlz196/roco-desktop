@@ -110,14 +110,29 @@ input:focus, select:focus {
 }
 
 .pet-info {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+    width: 100%;
     margin-bottom: 15px;
 }
 
 .pet-info.hidden {
     display: none;
+}
+
+.pet-main {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    width: 100%;
+}
+
+.pet-meta {
+    flex: 1;
+    min-width: 0;
+}
+
+.pet-meta h3 {
+    font-size: 1rem;
+    margin-bottom: 8px;
 }
 
 .pet-info img {
@@ -133,9 +148,28 @@ input:focus, select:focus {
     display: flex;
     flex-wrap: wrap;
     gap: 8px;
-    justify-content: center;
+    justify-content: flex-start;
     font-size: 0.85rem;
     color: var(--text-muted);
+}
+
+@media (max-width: 520px) {
+    .pet-main {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .pet-meta {
+        width: 100%;
+    }
+
+    .pet-meta h3 {
+        text-align: center;
+    }
+
+    .base-stats {
+        justify-content: center;
+    }
 }
 
 .config-grid {

@@ -21,15 +21,19 @@
             </div>
 
             <div id="atkPetInfo" class="pet-info hidden">
-                <img id="atkPetImg" src="" alt="pet">
-                <h3 id="atkPetName">-</h3>
-                <div class="base-stats">
-                    <span>精力 <span id="atkBaseHp">0</span></span>
-                    <span>物攻 <span id="atkBaseAtk">0</span></span>
-                    <span>防禦 <span id="atkBaseDef">0</span></span>
-                    <span>魔攻 <span id="atkBaseMatk">0</span></span>
-                    <span>魔抗 <span id="atkBaseMdef">0</span></span>
-                    <span>速度 <span id="atkBaseSpd">0</span></span>
+                <div class="pet-main">
+                    <img id="atkPetImg" src="" alt="pet">
+                    <div class="pet-meta">
+                        <h3 id="atkPetName">-</h3>
+                        <div class="base-stats">
+                            <span>精力 <span id="atkBaseHp">0</span></span>
+                            <span>物攻 <span id="atkBaseAtk">0</span></span>
+                            <span>防御 <span id="atkBaseDef">0</span></span>
+                            <span>魔攻 <span id="atkBaseMatk">0</span></span>
+                            <span>魔抗 <span id="atkBaseMdef">0</span></span>
+                            <span>速度 <span id="atkBaseSpd">0</span></span>
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -82,11 +86,15 @@
             </div>
 
             <div id="defPetInfo" class="pet-info hidden">
-                <img id="defPetImg" src="" alt="pet">
-                <h3 id="defPetName">-</h3>
-                <div class="base-stats">
-                    <span>物防 <span id="defBaseDef">0</span></span>
-                    <span>魔抗 <span id="defBaseMdef">0</span></span>
+                <div class="pet-main">
+                    <img id="defPetImg" src="" alt="pet">
+                    <div class="pet-meta">
+                        <h3 id="defPetName">-</h3>
+                        <div class="base-stats">
+                            <span>物防 <span id="defBaseDef">0</span></span>
+                            <span>魔抗 <span id="defBaseMdef">0</span></span>
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -99,7 +107,7 @@
                     </select>
                 </div>
                 <div class="input-group">
-                    <label>防禦天分</label>
+                    <label>防御天分</label>
                     <input type="number" id="defIvDef" min="0" max="10" value="10">
                 </div>
                 <div class="input-group">

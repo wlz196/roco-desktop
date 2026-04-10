@@ -49,6 +49,48 @@ const D = {
 // 属性ID映射
 const ATTR_MAP = { hp: 79, atk: 80, matk: 81, def: 82, mdef: 83, spd: 84 };
 
+function resolvePetImageUrl(imageUrl) {
+    if (!imageUrl) return '';
+    if (/^https?:\/\//i.test(imageUrl)) return imageUrl;
+
+    const cleanPath = String(imageUrl).replace(/^\/+/, '');
+    if (cleanPath.startsWith('media/')) {
+        return `${IMAGE_BASE}/${cleanPath}`;
+    }
+    if (cleanPath.startsWith('pets/')) {
+        return `${IMAGE_BASE}/media/${cleanPath}`;
+    }
+    return `${IMAGE_BASE}/${cleanPath}`;
+}
+
+function pickNumber(obj, keys, fallback = 0) {
+    for (const key of keys) {
+        const value = obj?.[key];
+        if (value !== undefined && value !== null && value !== '') {
+            const num = Number(value);
+            if (!Number.isNaN(num)) return num;
+        }
+    }
+    return fallback;
+}
+
+function normalizePetStats(pet) {
+    return {
+        ...pet,
+        hp: pickNumber(pet, ['hp']),
+        attack: pickNumber(pet, ['attack', 'atk']),
+        defense: pickNumber(pet, ['defense', 'def']),
+        magic_attack: pickNumber(pet, ['magic_attack', 'magicAttack', 'sp_atk', 'spAttack']),
+        magic_defense: pickNumber(pet, ['magic_defense', 'magicDefense', 'sp_def', 'spDefense']),
+        speed: pickNumber(pet, ['speed', 'spd'])
+    };
+}
+
+function fmt1(value) {
+    const num = Number(value);
+    return Number.isFinite(num) ? num.toFixed(1) : '0.0';
+}
+
 // 防抖函数
 function debounce(func, wait) {
     let timeout;
@@ -127,7 +169,7 @@ async function handleSearch(keyword, resultContainer, side) {
         if (pets.length > 0) {
             resultContainer.innerHTML = pets.map(p => `
                 <div class="search-item" data-id="${p.id}">
-                    <img src="${IMAGE_BASE}${p.imageUrl}" style="width:20px;height:20px;vertical-align:middle;margin-right:5px;">
+                    <img src="${resolvePetImageUrl(p.imageUrl)}" style="width:20px;height:20px;vertical-align:middle;margin-right:5px;">
                     ${p.name}
                 </div>
             `).join('');
@@ -154,12 +196,13 @@ async function handleSearch(keyword, resultContainer, side) {
 async function loadPetDetails(id, side) {
     try {
         const res = await fetch(`${API_BASE}/pets/${id}/details`);
-        const pet = await res.json();
+        const rawPet = await res.json();
+        const pet = normalizePetStats(rawPet);
         
         if (side === 'atk') {
             atkPet = pet;
             D.atkPetInfo.classList.remove('hidden');
-            D.atkPetImg.src = `${IMAGE_BASE}${pet.imageUrl}`;
+            D.atkPetImg.src = resolvePetImageUrl(pet.imageUrl);
             D.atkPetName.innerText = pet.name;
             D.atkBaseHp.innerText = pet.hp;
             D.atkBaseAtk.innerText = pet.attack;
@@ -170,7 +213,7 @@ async function loadPetDetails(id, side) {
         } else {
             defPet = pet;
             D.defPetInfo.classList.remove('hidden');
-            D.defPetImg.src = `${IMAGE_BASE}${pet.imageUrl}`;
+            D.defPetImg.src = resolvePetImageUrl(pet.imageUrl);
             D.defPetName.innerText = pet.name;
             D.defBaseDef.innerText = pet.defense;
             D.defBaseMdef.innerText = pet.magic_defense;
@@ -202,9 +245,9 @@ function updateCalculations() {
 
         const calc = (base, iv, mod, isHp = false) => {
             if (isHp) {
-                return Math.floor((base * 1.7 + iv * talentModHP + 70) * mod + 100);
+                return (base * 1.7 + iv * talentModHP + 70) * mod + 100;
             }
-            return Math.floor((base * 1.1 + iv * talentModOther + 10) * mod + 50);
+            return (base * 1.1 + iv * talentModOther + 10) * mod + 50;
         };
 
         atkResults = {
@@ -216,12 +259,12 @@ function updateCalculations() {
             spd: calc(atkPet.speed, parseInt(D.atkIvs.spd.value), getMod(ATTR_MAP.spd))
         };
 
-        document.getElementById('atkFinalHp').innerText = atkResults.hp;
-        document.getElementById('atkFinalAtk').innerText = atkResults.atk;
-        document.getElementById('atkFinalDef').innerText = atkResults.def;
-        document.getElementById('atkFinalMatk').innerText = atkResults.matk;
-        document.getElementById('atkFinalMdef').innerText = atkResults.mdef;
-        document.getElementById('atkFinalSpd').innerText = atkResults.spd;
+        document.getElementById('atkFinalHp').innerText = fmt1(atkResults.hp);
+        document.getElementById('atkFinalAtk').innerText = fmt1(atkResults.atk);
+        document.getElementById('atkFinalDef').innerText = fmt1(atkResults.def);
+        document.getElementById('atkFinalMatk').innerText = fmt1(atkResults.matk);
+        document.getElementById('atkFinalMdef').innerText = fmt1(atkResults.mdef);
+        document.getElementById('atkFinalSpd').innerText = fmt1(atkResults.spd);
     }
 
     // 2. 计算敌方防御矩阵
@@ -230,7 +273,7 @@ function updateCalculations() {
         const talentModOther = (1 + starLevel) * 0.55;
         
         const calcDef = (base, iv, mod) => {
-            return Math.floor((base * 1.1 + iv * talentModOther + 10) * mod + 50);
+            return (base * 1.1 + iv * talentModOther + 10) * mod + 50;
         };
 
         const defIv = parseInt(D.defIvs.def.value);
@@ -247,13 +290,13 @@ function updateCalculations() {
             minusMdef: calcDef(defPet.magic_defense, mdefIv, 0.9)
         };
 
-        document.getElementById('defPlusDef').innerText = defMatrix.plusDef;
-        document.getElementById('defNeutralDef').innerText = defMatrix.neutralDef;
-        document.getElementById('defMinusDef').innerText = defMatrix.minusDef;
+        document.getElementById('defPlusDef').innerText = fmt1(defMatrix.plusDef);
+        document.getElementById('defNeutralDef').innerText = fmt1(defMatrix.neutralDef);
+        document.getElementById('defMinusDef').innerText = fmt1(defMatrix.minusDef);
         
-        document.getElementById('defPlusMdef').innerText = defMatrix.plusMdef;
-        document.getElementById('defNeutralMdef').innerText = defMatrix.neutralMdef;
-        document.getElementById('defMinusMdef').innerText = defMatrix.minusMdef;
+        document.getElementById('defPlusMdef').innerText = fmt1(defMatrix.plusMdef);
+        document.getElementById('defNeutralMdef').innerText = fmt1(defMatrix.neutralMdef);
+        document.getElementById('defMinusMdef').innerText = fmt1(defMatrix.minusMdef);
     }
 
     // 3. 计算最终伤害
@@ -266,11 +309,11 @@ function updateCalculations() {
         let dNeutral = dmgType === 'physical' ? defMatrix.neutralDef : defMatrix.neutralMdef;
         let dMinus = dmgType === 'physical' ? defMatrix.minusDef : defMatrix.minusMdef;
 
-        const calcDmg = (atk, def, pwr) => Math.floor((atk / def) * 0.9 * pwr);
+        const calcDmg = (atk, def, pwr) => (atk / def) * 0.9 * pwr;
 
-        document.getElementById('resDmgPlus').innerText = calcDmg(a, dPlus, power);
-        document.getElementById('resDmgNeutral').innerText = calcDmg(a, dNeutral, power);
-        document.getElementById('resDmgMinus').innerText = calcDmg(a, dMinus, power);
+        document.getElementById('resDmgPlus').innerText = fmt1(calcDmg(a, dPlus, power));
+        document.getElementById('resDmgNeutral').innerText = fmt1(calcDmg(a, dNeutral, power));
+        document.getElementById('resDmgMinus').innerText = fmt1(calcDmg(a, dMinus, power));
     }
 }
 
