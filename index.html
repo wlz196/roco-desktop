@@ -91,8 +91,12 @@
                     <div class="pet-meta">
                         <h3 id="defPetName">-</h3>
                         <div class="base-stats">
+                            <span>精力 <span id="defBaseHp">0</span></span>
+                            <span>物攻 <span id="defBaseAtk">0</span></span>
                             <span>物防 <span id="defBaseDef">0</span></span>
+                            <span>魔攻 <span id="defBaseMatk">0</span></span>
                             <span>魔抗 <span id="defBaseMdef">0</span></span>
+                            <span>速度 <span id="defBaseSpd">0</span></span>
                         </div>
                     </div>
                 </div>
@@ -114,6 +118,15 @@
                     <label>魔抗天分</label>
                     <input type="number" id="defIvMdef" min="0" max="10" value="10">
                 </div>
+            </div>
+
+            <div class="iv-sliders">
+                <div class="iv-item"><label>精</label><input type="number" id="defIvHp" min="0" max="10" value="10"></div>
+                <div class="iv-item"><label>物攻</label><input type="number" id="defIvAtk" min="0" max="10" value="10"></div>
+                <div class="iv-item"><label>物防</label><input type="number" id="defIvDef" min="0" max="10" value="10"></div>
+                <div class="iv-item"><label>魔攻</label><input type="number" id="defIvMatk" min="0" max="10" value="10"></div>
+                <div class="iv-item"><label>魔抗</label><input type="number" id="defIvMdef" min="0" max="10" value="10"></div>
+                <div class="iv-item"><label>速</label><input type="number" id="defIvSpd" min="0" max="10" value="10"></div>
             </div>
 
             <div class="calc-results highlight-matrix">

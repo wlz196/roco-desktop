@@ -34,8 +34,12 @@ const D = {
     defPetInfo: document.getElementById('defPetInfo'),
     defPetImg: document.getElementById('defPetImg'),
     defPetName: document.getElementById('defPetName'),
+    defBaseHp: document.getElementById('defBaseHp'),
+    defBaseAtk: document.getElementById('defBaseAtk'),
     defBaseDef: document.getElementById('defBaseDef'),
+    defBaseMatk: document.getElementById('defBaseMatk'),
     defBaseMdef: document.getElementById('defBaseMdef'),
+    defBaseSpd: document.getElementById('defBaseSpd'),
     defStarLevel: document.getElementById('defStarLevel'),
 
     // 各种输入框集合
@@ -48,8 +52,12 @@ const D = {
         spd: document.getElementById('atkIvSpd')
     },
     defIvs: {
+        hp: document.getElementById('defIvHp'),
+        atk: document.getElementById('defIvAtk'),
         def: document.getElementById('defIvDef'),
-        mdef: document.getElementById('defIvMdef')
+        matk: document.getElementById('defIvMatk'),
+        mdef: document.getElementById('defIvMdef'),
+        spd: document.getElementById('defIvSpd')
     }
 };
 
@@ -222,8 +230,12 @@ async function loadPetDetails(id, side) {
             D.defPetInfo.classList.remove('hidden');
             D.defPetImg.src = resolvePetImageUrl(pet.imageUrl);
             D.defPetName.innerText = pet.name;
+            D.defBaseHp.innerText = pet.hp;
+            D.defBaseAtk.innerText = pet.attack;
             D.defBaseDef.innerText = pet.defense;
+            D.defBaseMatk.innerText = pet.magic_attack;
             D.defBaseMdef.innerText = pet.magic_defense;
+            D.defBaseSpd.innerText = pet.speed;
         }
         updateCalculations();
     } catch (e) {
