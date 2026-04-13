@@ -1,5 +1,6 @@
 const API_BASE = 'http://159.65.135.84:8081/api/v1/data';
 const IMAGE_BASE = 'http://159.65.135.84:8081';
+const PVP_STAR_LEVEL = 5;
 
 function getFullImageUrl(path) {
     if (!path) return '';
@@ -27,7 +28,6 @@ const D = {
     atkBaseMdef: document.getElementById('atkBaseMdef'),
     atkBaseSpd: document.getElementById('atkBaseSpd'),
     atkNature: document.getElementById('atkNature'),
-    atkStarLevel: document.getElementById('atkStarLevel'),
 
     defSearch: document.getElementById('defSearch'),
     defSearchResults: document.getElementById('defSearchResults'),
@@ -40,7 +40,6 @@ const D = {
     defBaseMatk: document.getElementById('defBaseMatk'),
     defBaseMdef: document.getElementById('defBaseMdef'),
     defBaseSpd: document.getElementById('defBaseSpd'),
-    defStarLevel: document.getElementById('defStarLevel'),
 
     // 各种输入框集合
     atkIvs: {
@@ -155,14 +154,14 @@ function setupEventListeners() {
 
     // 重新计算触发器
     const recalcInputs = [
-        D.atkNature, D.atkStarLevel, 
+        D.atkNature,
         ...Object.values(D.atkIvs),
-        D.defStarLevel, ...Object.values(D.defIvs),
+        ...Object.values(D.defIvs),
         document.getElementById('dmgPower')
     ];
     document.querySelectorAll('input[name="dmgType"]').forEach(r => recalcInputs.push(r));
 
-    recalcInputs.forEach(el => {
+    recalcInputs.filter(Boolean).forEach(el => {
         el.addEventListener('change', updateCalculations);
         if (el.tagName === 'INPUT' && el.type === 'number') {
             el.addEventListener('input', updateCalculations);
@@ -249,7 +248,7 @@ function updateCalculations() {
 
     // 1. 计算我方能力值
     if (atkPet) {
-        const starLevel = parseInt(D.atkStarLevel.value);
+        const starLevel = PVP_STAR_LEVEL;
         const natureId = parseInt(D.atkNature.value);
         const nature = natures.find(n => n.id === natureId) || {};
         
@@ -288,7 +287,7 @@ function updateCalculations() {
 
     // 2. 计算敌方防御矩阵
     if (defPet) {
-        const starLevel = parseInt(D.defStarLevel.value);
+        const starLevel = PVP_STAR_LEVEL;
         const talentModOther = (1 + starLevel) * 0.55;
         
         const calcDef = (base, iv, mod) => {
