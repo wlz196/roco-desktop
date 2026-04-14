@@ -4,8 +4,8 @@
 
 ## 📸 应用预览
 
-![应用截图预览](https://via.placeholder.com/800x450.png?text=Roco+Desktop+Screenshot)  
-*(请将链接替换为你本地的运行截图路径)*
+![应用截图预览](ui/Snipaste_2026-04-14_16-38-42.png)  
+*(界面截图已放在 `ui/`，示例文件：`ui/Snipaste_2026-04-14_16-38-42.png`)*
 
 ## ✨ 核心功能
 
@@ -16,6 +16,16 @@
 ## 🛠 技术栈
 
 基于 `Electron (^29.1.0)` + 原生 `Vanilla JS / HTML / CSS` 构建的无依赖轻量客户端。
+
+## 📁 项目结构
+
+- `index.html`: 应用入口（主窗口）。
+- `main.js`: Electron 主进程脚本。
+- `src/renderer.js`: 渲染进程脚本。
+- `ui/`: 界面相关资源和组件（界面已放在此文件夹）。
+- `style.css`: 全局样式。
+- `package.json`: 项目配置与启动脚本。
+- `start-app.cmd` / `start-app.sh`: 平台启动脚本。
 
 ## 🚀 快速启动
 
